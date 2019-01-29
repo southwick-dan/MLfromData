@@ -1,0 +1,128 @@
+\documentclass[12pt]{article}
+\usepackage{fullpage}
+\usepackage{subcaption,amsmath,amssymb,mathtools,xparse,graphicx,float,datetime,color,array,graphics,enumerate,tikz,pgfplots,xcolor}
+\usepgfplotslibrary{statistics}
+\pagestyle{empty}
+\newcommand{\D}{\displaystyle}
+\setlength{\textheight}{9in} \setlength{\headheight}{.2in}
+\setlength{\headsep}{0in} \setlength{\topmargin}{0in}
+\begin{document}
+\begin{center}
+CSCI 6100 Machine Learning From Data\\
+Fall 2018\\
+\end{center}
+\begin{center}
+HOMEWORK 8\\
+Daniel Southwick\\
+661542908\\
+southd@rpi.edu
+\end{center}
+\vspace{.1in}
+
+\noindent {\bf Exercise 4.3} \\\\
+\indent a) If $\mathcal{H}$ is fixed and we increase the complexity of $f$, then the deterministic noise will go up in general. There is a higher tendency to overfit. \\\\
+\indent b) If $f$ is fixed and we decrease the complexity of $\mathcal{H}$, then the deterministic noise will go up in general. There is a lower tendency to overfit. \\\\
+
+\noindent {\bf Exercise 4.5} \\\\
+\indent a) When $\Gamma = \mathrm{I}$, where $\mathrm{I}$ is an identity matrix with dimension $Q+1$, then we can obtain a constraint in the form of $\displaystyle \sum_{q =0}^Q w_q^2 \leq C$: \begin{align*}
+\displaystyle {w}^T\Gamma^T\Gamma {w} =  {w}^T\mathrm{I}^T\mathrm{I} {w} =  {w}^T {w} = \sum_{q =0}^Q w_q^2
+\end{align*} 
+\indent b) When $\Gamma = \left[1,1,...,1\right]$, we can obtain a constraint in the form of $\displaystyle (\sum_{q =0}^Q w_q)^2 \leq C$:
+\begin{align*}
+\displaystyle  {w}^T\Gamma^T\Gamma  {w} = [w_0\dots w_q]\left[\begin{array}{c}1\\\vdots\\1\end{array}\right][1\dots1]\left[\begin{array}{c}w_0\\\vdots\\w_q\end{array}\right] = \sum_{q =0}^Q w_q \sum_{q =0}^Q w_q = \left(\sum_{q =0}^Q w_q\right)^2
+\end{align*} 
+
+\noindent {\bf Exercise 4.6} \\\\
+\indent The hard-order constraint should be more useful in terms of binary classification. Let $w^*$ denote the optimal weight vector without constraints, and if the constraint $w^Tw \leq C$ was added, the new optimal vector became $\displaystyle w = w^**\frac{C}{w^{*T}w^*}$. So $sign(w^{*T}x) = sign(w^**\frac{C}{w^{*T}w^*}x)$. So the constraint gets satisfied and for binary classification, we only want to know the sign of $  {w}^T  {x}$, the larger weight or smaller weight cannot affect the penalty.\\\\
+
+\noindent {\bf Exercise 4.7} \\\\
+\indent a) Since $(x_n,y_n)$ is independent from data $(x_m,y_m)$:
+\begin{align*}
+	\sigma_{\mathrm{val}}^2 &= \mathrm{Var}_{\mathcal{D}_\mathrm{val}}\left[E_{\mathrm{val}}(g^-)\right] \\
+	&= \mathrm{Var}_{\mathcal{D}_\mathrm{val}}\left[\frac{1}{K}\sum_{  {x}_n\in\mathcal{D}_{\mathrm{val}}}  {e}(g^-(  {x}_n), y_n)\right] \\
+	&= \frac{1}{K^2}\left[\sum_{  {x}_n\in\mathcal{D}_{\mathrm{val}}} Var({e}(g^-(  {x}_n), y_n)) + \sum_{  {x}_n,x_m \in\mathcal{D}_{\mathrm{val},n\neq m}} COV( {e}(g^-(  {x}_n), y_n),  {e}(g^-(  {x}_m), y_m))\right] \\
+	&= \frac{1}{K^2}\left[\sum_{  {x}_n\in\mathcal{D}_{\mathrm{val}}} Var({e}(g^-(  {x}_n), y_n)) \right] \\
+	&= \frac{1}{K^2} \cdot  K \cdot \mathrm{Var}\left[  {e}(g^-(  {x}), y)\right] \\
+	&= \frac{1}{K^2} \cdot  K \cdot  \sigma^2(g^-) \\
+	&= \frac{1}{K}\sigma^2(g^-) 
+\end{align*}
+\indent b) Since $e(g^-(x),y) = \left[ g^-(x) \neq y \right]$
+\begin{align*}
+		\mathbb{P}\left[e(g^-(x),y)=1\right] &= p\\ 
+		\mathbb{P}\left[e(g^-(x),y)=0\right] &= 1-p\\
+		E(e(g^-(x),y)) &= 1*p + 0*(1-p) = p
+\end{align*}
+\begin{align*}
+\mathrm{Var}_{\mathcal{D}_\mathrm{val}}\left[E_{\mathrm{val}}(g^-)\right] &= \mathrm{Var}_{\mathcal{D}_\mathrm{val}}\left[\frac{1}{K}\sum_{  {x}_n\in\mathcal{D}_{\mathrm{val}}}  {e}(g^-(  {x}_n), y_n)\right] \\
+&= \frac{1}{K^2} \cdot \mathrm{Var}\left[  {e}(g^-(  {x}), y)\right] \\
+&= \frac{1}{K} \left[ p(1-p)^2+(1-p)(0-p)^2 \right]\\
+& = \frac{p - p^2}{K}\\\\
+\mathbb{P}\left[g^-(\textbf{x})\neq y\right]  &= \frac{1}{K}\mathbb{P}\left[g^-(\textbf{x})\neq y\right]^2
+\end{align*}
+\indent c) We can modify the result from part b) to:
+\begin{align*}
+\mathrm{Var}_{\mathcal{D}_\mathrm{val}}\left[E_{\mathrm{val}}(g^-)\right] &= \frac{p - p^2}{K}\\
+&=\frac{1}{K}\left[-(p-\frac{1}{2})^2+\frac{1}{4}\right]
+\end{align*}
+So the maximum of $\sigma^2_{val}$ is $\displaystyle \frac{1}{4K}$, thus $\displaystyle \sigma^2_{val} \leq \frac{1}{4K}$\\\\
+\indent d) $e(g^-(x),y) = (g^-(x)-y)^2$ 
+\begin{align*}
+\mathrm{Var}_{\mathcal{D}_\mathrm{val}}\left[E_{\mathrm{val}}(g^-)\right] &= \mathrm{Var}_{\mathcal{D}_\mathrm{val}}\left[\frac{1}{K}\sum_{  {x}_n\in\mathcal{D}_{\mathrm{val}}}  {e}(g^-(  {x}_n), y_n)\right] \\
+&= \frac{1}{K^2} \cdot \mathrm{Var}\left[  {e}(g^-(  {x}), y)\right] \\
+&= \frac{1}{K} \left[ p(1-p)^2(g^-(x)-y)^4+(1-p)(0-p(g^-(x)-y)^2)^2 \right]\\
+& = \frac{p - p^2}{K}(g^-(x)-y)^4
+\end{align*}
+Since the square error is unbounded, thus there is no uniform upper bound for $Var\left[E_{val}(g^-)\right]$\\\\
+\indent e) The $\sigma^2(g^-)$ expected to be higher. Since fewer data points indicates more possible to overfit, then theoretically the out of sample error should be larger and the validation error is expected to increase.\\\\
+\indent f) Since $\displaystyle\sigma_{\mathrm{val}}^2 = \frac{1}{K}\sigma^2(g^-)$(from part a)), increasing the size of validation set means increasing $K$. but it also results in decreasing in size of training set, which leads to worse $g$ that increases $\sigma^2(g^-)$. Thus if we estimate $E_{out}(g)$ with $E_{out}(g^-)$, then increasing the size of the validation set can result in a better or worse estimate of $E_{out}$, either case could happen.\\\\
+
+\noindent {\bf Exercise 4.8} \\\\
+\indent Yes, $E_m$ is an unbiased estimate for the out of sample error $E_{out}(g^-_m)$, since the selection of $g^-_m$ depends only on training data set, which does not include validation data points. \\\\
+
+\noindent {\bf Problem 4.26} \\\\
+\indent a) \begin{center}$Z = \left[\begin{array}{c}z^T_1\\ z^T_2 \\\vdots\\z^T_N\end{array}\right]$, $Z^T = \left[z_1 z_2 \hdots z_N \right]$\end{center}
+\begin{align*}
+&Z^TZ = \left[z_1 z_2 \hdots z_N \right]  \left[\begin{array}{c}z^T_1\\ z^T_2 \\\vdots\\z^T_N\end{array}\right] = \sum_{n =1}^N z_n z_n^T\\
+&Z^Ty = \left[z_1 z_2 \hdots z_N \right] y = \sum_{n =1}^N z_n y_n\\
+&H(\lambda) = Z(Z^TZ+\lambda \Gamma^T \Gamma)^{-1}Z^T = \left[\begin{array}{c}z^T_1\\ z^T_2 \\\vdots\\z^T_N\end{array}\right] (Z^TZ + \lambda \Gamma^T \Gamma)^{-1}  \left[z_1 z_2 \hdots z_N \right]\\\\
+&H_{nm}(\lambda) = z_n^T(Z^TZ + \lambda \Gamma^T \Gamma)^{-1}z_m = z_n^TA^{-1}z_m
+ \end{align*}
+ And when $(z_n,y_n)$ is left out, from the previous terms $Z^TZ \rightarrow Z^TZ - z_n z_n^T$ and $Z^Ty \rightarrow Z^TY - z_n y_n$\\\\\\
+ \indent b) \\
+ \indent Since $\displaystyle (A - x x^T)^{-1} = A^{-1} + \frac{A^-1x x^T A^{-1}}{1 - x^TA^{-1}x}$, we replace $x$ by $z_n$.
+ \begin{align*} 
+ \displaystyle
+ w &= (Z^T Z + \lambda \Gamma^T \Gamma)^{-1}Z^T y = A^{-1}Z^T y\\
+  w_n^- &= (Z^TZ + \lambda \Gamma^T \Gamma - z_n z_n^T)^{-1}(Z^T y - z_n y_n)\\
+ &= (A - z_n z_n^T)^{-1}(Z^T y - z_ny_n)\\
+   &= (A^{-1} + \frac{A^{-1}z_n z_n^T A^{-1}}{1 - z_n^TA^{-1}z_n})(Z^T y - z_n y_n)
+ \end{align*}
+ \indent c) 
+  \begin{align*} 
+ \displaystyle
+ w_n^-&= (A^{-1} + \frac{A^{-1}z_n z_n^T A^{-1}}{1 - z_n^TA^{-1}z_n})(Z^T y - z_n y_n)\\
+ &= A^{-1}Z^T + \frac{A^{-1}z_n z_n^T A^{-1}}{1 - z_n^TA^{-1}z_n} Z^T y - A^{-1} z_n y_n - \frac{A^{-1}z_n z_n^T A^{-1}}{1 - z_n^TA^{-1}z_n} z_n y_n\\
+ & = w + \frac{A^{-1}z_n z_n^T w}{1 - H_{nn}} - A^{-1} z_n y_n - \frac{A^{-1}z_n H_{nn} y_n}{1 - H_{nn}}\\
+ & = w + \frac{A^{-1}z_n \hat{y_n}}{1 - H_{nn}} - \frac{A^{-1}z_n y_n}{1 - H_{nn}}\\
+ & = w + \frac{\hat{y_n} - y_n}{1 - H_{nn}} A^{-1} z_n
+ \end{align*}
+\indent d)
+ \begin{align*} 
+ \displaystyle
+ w_n^-&=w + \frac{y_n - \hat{y_n}}{1 - H_{nn}} A^{-1} z_n\\
+ z_n^T w_n^- & = z_n^T(w + \frac{y_n - \hat{y_n}}{1 - H_{nn}} A^{-1} z_n)\\
+ & = \hat{y_n} + \frac{\hat{y_n} - y_n}{1 - H_{nn}} z_n^T A^{-1} z_n\\
+ & = \hat{y_n} + \frac{\hat{y_n} - y_n}{1 - H_{nn}} H_{nn}\\
+ & = \frac{\hat{y_n} - H_{nn}y_n}{1 - H_{nn}}
+ \end{align*}
+ \indent e)
+ \begin{align*} 
+ \displaystyle
+ e_n & = (z_n^T w_n^-  - y_n)^2\\
+ & = (\frac{\hat{y_n} - H_{nn}y_n}{1 - H_{nn}} - y_n)^2\\
+ & = (\frac{\hat{y_n} - y_n}{1 - H_{nn}})^2 \\
+ E_{cv}&= \frac{1}{N}\sum_{n = 1}^{N}e_n\\
+ & =  \frac{1}{N}\sum_{n = 1}^{N} (\frac{\hat{y_n} - y_n}{1 - H_{nn}})^2
+ \end{align*}
+\end{document}
+
